@@ -5,7 +5,8 @@ ctrl.Index = (req, res) => {
 };
 
 ctrl.Create = (req, res) => {
-  
+  console.log(req.body);
+  res.send("LL");
 };
 ctrl.Like = (req, res) => {
   

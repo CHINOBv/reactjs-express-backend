@@ -6,7 +6,7 @@ const image = require('../controllers/image.js');
 
 module.exports = app =>{
 
-  router.get('/', image.Index);
+  router.get('/', home.Index);
   router.get('/images/:image_id', image.Index);
   router.post('/images', image.Create);
   router.post('/images/:image_id/like', image.Like);
