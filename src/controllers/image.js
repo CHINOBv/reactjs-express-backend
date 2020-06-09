@@ -1,23 +1,42 @@
+const path = require("path");
+const fs = require("fs-extra");
+
+const { randomNumber } = require("../helpers/libs.js");
+
 const ctrl = {};
 
-ctrl.Index = (req, res) => {
-  
-};
+ctrl.Index = (req, res) => {};
 
-ctrl.Create = (req, res) => {
-  console.log(req.body);
+ctrl.Create = async (req, res) => {
+  /*
+
+  1.-Create a Name Random
+  2.-Get img Temp Path
+  3.-Extract te Extension of Image
+  4.-URL to copy the Image whit extension
+
+  5.-Verify the extension
+  6.-Save URL
+
+  */
+
+  const imgURL = randomNumber();
+  const imgTempPath = req.file.path;
+  const ext = path.extname(req.file.originalname).toLowerCase();
+  const targetPath = path.resolve(`src/public/upload/${imgURL}${ext}`);
+
+  console.log(imgURL);
+  console.log(req.file);
+
+  if (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".gif") {
+    await fs.rename(imgTempPath, targetPath);
+  }
+
   res.send("LL");
 };
-ctrl.Like = (req, res) => {
-  
-};
-ctrl.Comment = (req, res) => {
-  
-};
+ctrl.Like = (req, res) => {};
+ctrl.Comment = (req, res) => {};
 
-ctrl.Delete = (req, res) => {
-  
-};
-
+ctrl.Delete = (req, res) => {};
 
 module.exports = ctrl;
