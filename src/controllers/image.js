@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs-extra");
+const { Image } = require("../models/");
 
 const { randomNumber } = require("../helpers/libs.js");
 
@@ -25,11 +26,18 @@ ctrl.Create = async (req, res) => {
   const ext = path.extname(req.file.originalname).toLowerCase();
   const targetPath = path.resolve(`src/public/upload/${imgURL}${ext}`);
 
-  console.log(imgURL);
-  console.log(req.file);
+  const title = req.body.title;
+  const description = req.body.description;
 
   if (ext === ".png" || ext === ".jpg" || ext === ".jpeg" || ext === ".gif") {
     await fs.rename(imgTempPath, targetPath);
+    const newImg = new Image({
+      title,
+      filename: imgURL + ext,
+      description,
+    });
+    const imgSaved = await newImg.save();
+    console.log(imgSaved);
   }
 
   res.send("LL");
