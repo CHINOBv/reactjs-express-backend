@@ -9,7 +9,8 @@ const ImageSchema = new Schema({
   filename: { type: String },
   views: { type: Number, default: 0 },
   likes: { type: Number, default: 0 },
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
+  directory: { type: String }
 });
 
 ImageSchema.virtual('uniqueId')

@@ -6,6 +6,8 @@ const multer = require("multer");
 const express = require("express");
 const routes = require("../routes/index.routes.js");
 const errorHandler = require("errorhandler");
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = (app) => {
   //Settings
@@ -25,7 +27,12 @@ module.exports = (app) => {
 
   //middlewares
 
-  app.use(cors());
+  const corsOptions = {
+    origin: process.env.CORS_HOST,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(morgan("dev"));
   app.use(
