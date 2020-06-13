@@ -8,6 +8,7 @@ const routes = require("../routes/index.routes.js");
 const errorHandler = require("errorhandler");
 const dotenv = require('dotenv');
 dotenv.config();
+const compression = require('compression');
 
 module.exports = (app) => {
   //Settings
@@ -41,6 +42,7 @@ module.exports = (app) => {
     )
   );
   app.use(express.urlencoded( {extended: false} ));
+  app.use(compression());
 
   //Routes
   routes(app);

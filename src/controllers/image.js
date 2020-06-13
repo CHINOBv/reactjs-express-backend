@@ -6,7 +6,12 @@ const { randomNumber } = require("../helpers/libs.js");
 
 const ctrl = {};
 
-ctrl.Index = (req, res) => {};
+ctrl.Index = async(req, res) => {
+  const id = req.params.image_id;
+  const image = await Image.findById({_id: id});
+  //console.log(image);
+  res.json({image});
+};
 
 ctrl.Create = (req, res) => {
   const saveImage = async () => {
@@ -57,10 +62,10 @@ ctrl.Create = (req, res) => {
       newImg.id = newImg._id;
       const imgSaved = await newImg.save();
 
-      res.send("Its Okay Man, You are the Master");
+      res.json({ Message: "Image Uploaded" });
     } else {
       await fs.unlink(imgTempPath);
-      res.status(500).json({ Error: "Only Images are Allowed" });
+      res.json({ Error: "Only Images are Allowed" });
     }
   };
   saveImage();
@@ -68,7 +73,13 @@ ctrl.Create = (req, res) => {
 ctrl.Like = (req, res) => {};
 ctrl.Comment = (req, res) => {};
 
-ctrl.Delete = (req, res) => {};
+ctrl.Delete = async(req, res) => {
+  const {directory} = req.body;
+  const id = req.params.image_id;
+  const reds = await Image.remove({_id:id});
+  fs.unlink(directory);
+  res.json({reds});
+};
 
 ctrl.Download = (req, res) => {
   res.download(path.join(__dirname, "../public/img/logo.png"), (error) =>
