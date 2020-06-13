@@ -71,7 +71,10 @@ ctrl.Create = (req, res) => {
   saveImage();
 };
 ctrl.Like = (req, res) => {};
-ctrl.Comment = (req, res) => {};
+ctrl.Comment = (req, res) => {
+  console.log(req)
+  res.send("Posted")
+};
 
 ctrl.Delete = async(req, res) => {
   const {directory} = req.body;
