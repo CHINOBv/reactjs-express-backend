@@ -1,6 +1,9 @@
 const path = require("path");
 const fs = require("fs-extra");
+const md5 = require('md5');
+
 const { Image } = require("../models/");
+const { Comment } = require('../models/')
 
 const { randomNumber } = require("../helpers/libs.js");
 
@@ -70,9 +73,21 @@ ctrl.Create = (req, res) => {
   };
   saveImage();
 };
+
 ctrl.Like = (req, res) => {};
-ctrl.Comment = (req, res) => {
-  console.log(req)
+ctrl.Comment = async(req, res) => {
+  const image = await Image.findById({_id: req.params.image_id});
+  if(image){
+    const newComment = await new Comment(req.body);
+    newComment.gravatar = md5(newComment.email)
+    newComment.image_id = image._id;
+
+    await newComment.save();
+
+    res.send("Comment Created");
+  }
+
+
   res.send("Posted")
 };
 
