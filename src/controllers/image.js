@@ -1,19 +1,24 @@
 const path = require("path");
 const fs = require("fs-extra");
-const md5 = require('md5');
+const md5 = require("md5");
 
 const { Image } = require("../models/");
-const { Comment } = require('../models/')
+const { Comment } = require("../models/");
 
 const { randomNumber } = require("../helpers/libs.js");
 
 const ctrl = {};
 
-ctrl.Index = async(req, res) => {
+ctrl.Index = async (req, res) => {
   const id = req.params.image_id;
-  const image = await Image.findById({_id: id});
-  //console.log(image);
-  res.json({image});
+  const image = await Image.findById({ _id: id });
+  if (image) {
+    const comments = await Comment.find({ image_id: id });
+    image.views = image.views += 1;
+    await image.save();
+    //console.log(image);
+    res.json({ image, comments });
+  }
 };
 
 ctrl.Create = (req, res) => {
@@ -60,7 +65,7 @@ ctrl.Create = (req, res) => {
         title,
         filename: imgURL + ext,
         description,
-        directory: path.join(`/public/upload/${imgURL}${ext}`)
+        directory: path.join(`/public/upload/${imgURL}${ext}`),
       });
       newImg.id = newImg._id;
       const imgSaved = await newImg.save();
@@ -75,28 +80,25 @@ ctrl.Create = (req, res) => {
 };
 
 ctrl.Like = (req, res) => {};
-ctrl.Comment = async(req, res) => {
-  const image = await Image.findById({_id: req.params.image_id});
-  if(image){
+ctrl.Comment = async (req, res) => {
+  const image = await Image.findById({ _id: req.params.image_id });
+  if (image) {
     const newComment = await new Comment(req.body);
-    newComment.gravatar = md5(newComment.email)
+    newComment.gravatar = md5(newComment.email);
     newComment.image_id = image._id;
 
     await newComment.save();
 
     res.send("Comment Created");
   }
-
-
-  res.send("Posted")
 };
 
-ctrl.Delete = async(req, res) => {
-  const {directory} = req.body;
+ctrl.Delete = async (req, res) => {
+  const { directory } = req.body;
   const id = req.params.image_id;
-  const reds = await Image.remove({_id:id});
+  const reds = await Image.remove({ _id: id });
   fs.unlink(directory);
-  res.json({reds});
+  res.json({ reds });
 };
 
 ctrl.Download = (req, res) => {
@@ -116,10 +118,10 @@ ctrl.Download = (req, res) => {
   );
 };
 
-ctrl.getImages = async(req, res) => {
- const images = await Image.find().sort({timestamp: -1});
- 
- res.json({images})
-}
+ctrl.getImages = async (req, res) => {
+  const images = await Image.find().sort({ timestamp: -1 });
+
+  res.json({ images });
+};
 
 module.exports = ctrl;
